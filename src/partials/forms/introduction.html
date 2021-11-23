@@ -53,8 +53,8 @@
     Creature settings
     <hr>
     <p>
-      Here you can set the number of eyes of each creature, which will be used to determine the direction of the
-      nearest food unit. You can also set the creature's movement speed, and rotation speed.
+      Here you can set the number of eyes of each creature, which will be used to determine the direction of the nearest
+      food unit. You can also set the number of neurons in the hidden layer of the creature's neural network.
     </p>
     <hr>
     <include src="src/partials/slider.html">
@@ -69,26 +69,13 @@
     </include>
     <include src="src/partials/slider.html">
       {
-      "id": "movementSpeed",
-      "text": "Movement speed: ",
-      "type": "linear",
+      "id": "hiddenLayerSize",
+      "text": "Hidden layer size: ",
+      "type": "integer",
       "min": 1,
       "max": 10,
-      "step": 0.1,
-      "initial": 5,
-      "digits": 1
-      }
-    </include>
-    <include src="src/partials/slider.html">
-      {
-      "id": "rotationSpeed",
-      "text": "Rotation speed: ",
-      "type": "linear",
-      "min": 1,
-      "max": 10,
-      "step": 0.1,
-      "initial": 5,
-      "digits": 1
+      "step": 1,
+      "initial": 5
       }
     </include>
     <button id="cancel">Previous</button>
@@ -104,7 +91,7 @@
     <hr>
     <include src="src/partials/slider.html">
       {
-      "id": "foodCount",
+      "id": "initialFoodCount",
       "text": "Initial amount of food: ",
       "type": "integer",
       "min": 1,

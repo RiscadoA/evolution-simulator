@@ -1,0 +1,27 @@
+div#overlay {
+  position      : absolute;
+  width         : 100%;
+  padding       : 0.5em;
+  box-sizing    : border-box;
+  z-index       : 1;
+  background    : transparent;
+  display       : flex;
+  align-content : stretch;
+  gap           : 10px;
+  pointer-events: none;
+}
+
+div#overlay>div#start {
+  flex          : 1;
+  display       : flex;
+  gap           : 0.3em;
+  pointer-events: none;
+}
+
+div#overlay>div#end {
+  flex          : 1;
+  display       : flex;
+  gap           : 0.3em;
+  flex-direction: row-reverse;
+  pointer-events: none;
+}

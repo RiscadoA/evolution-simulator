@@ -1,0 +1,23 @@
+<div id="overlay">
+  <div id="start">
+    <button id="settingsButton"><i class="fas fa-cog"></i></button>
+    <button id="statisticsButton"><i class="fas fa-chart-bar"></i></button>
+    <include src="src/partials/display.html">{ "text": "Current generation: ", "id": "currentGeneration" }</include>
+  </div>
+  <div id="end">
+    <button id="helpButton"><i class="fas fa-question"></i></button>
+    <button id="fastForwardButton"><i class="fas fa-forward"></i></button>
+    <include src="src/partials/slider.html">
+      {
+      "id": "simulationSpeed",
+      "text": "Simulation speed: ",
+      "type": "exponential",
+      "min": 0.1,
+      "max": 2,
+      "step": 0.1,
+      "initial": 1,
+      "digits": 1
+      }
+    </include>
+  </div>
+</div>

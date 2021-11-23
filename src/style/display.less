@@ -1,0 +1,19 @@
+@display-box-color: #666666;
+@display-color    : #3a3a3a;
+
+div.display {
+  border          : 2px solid white;
+  border-radius   : 6px;
+  background-color: @display-box-color;
+  padding         : 0.25em;
+}
+
+div.display>span {
+  display         : inline-block;
+  border          : 2px solid white;
+  border-radius   : 6px;
+  background-color: @display-color;
+  padding         : 0 0.2em;
+  min-width       : 6ch;
+  text-align      : right;
+}

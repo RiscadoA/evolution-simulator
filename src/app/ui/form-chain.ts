@@ -31,7 +31,6 @@ export class FormChain {
       const form = this._forms[i];
 
       form.setOnSubmit(() => {
-        this._forms[i].visible = false;
         if (i == this._forms.length - 1) {
           this._currentIndex = -1;
           this._onSubmitCallback();
@@ -40,7 +39,6 @@ export class FormChain {
       });
 
       form.setOnCancel(() => {
-        this._forms[i].visible = false;
         if (i == 0) {
           this._currentIndex = -1;
           this._onCancelCallback();
@@ -79,12 +77,18 @@ export class FormChain {
       return null;
   }
 
-
   /**
    * Checks if the form chain is visible.
    */
   public get visible(): boolean {
     return this._currentIndex !== -1;
+  }
+
+  /**
+   * Skips to the next form in the chain, by submitting the current form.
+   */
+  public skip() {
+    if (this._currentIndex !== -1) this._forms[this._currentIndex].submit();
   }
 
   /**
@@ -105,10 +109,10 @@ export class FormChain {
    * @param name The name of the input.
    * @return The input.
    */
-  public get(name: string): Input<any>|null {
+  public get<T>(name: string): Input<T>|null {
     for (const form of this._forms) {
       const input = form.get(name);
-      if (input !== null) return input;
+      if (input !== null) return input as Input<T>;
     }
     return null;
   }
@@ -118,5 +122,21 @@ export class FormChain {
    */
   public get inputs(): IterableIterator<[string, Input<any>]> {
     return this._forms.flatMap(form => Array.from(form.inputs)).values();
+  }
+
+  /**
+   * Sets the on cancel callback.
+   * @param callback The callback.
+   */
+  public setOnCancel(callback: () => void) {
+    this._onCancelCallback = callback;
+  }
+
+  /**
+   * Sets the on submit callback.
+   * @param callback The callback.
+   */
+  public setOnSubmit(callback: () => void) {
+    this._onSubmitCallback = callback;
   }
 }

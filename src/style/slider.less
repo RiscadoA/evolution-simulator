@@ -1,14 +1,18 @@
-@input-color        : #3a3a3a;
-@track-color        : white;
-@thumb-color        : #026cb3;
-@thumb-color-hover  : #2aaaff;
-@thumb-color-active : #0099ff;
+@slider-color : #585858;
+@slider-input-color      : #3a3a3a;
+@track-color             : white;
+@thumb-color             : #026cb3;
+@thumb-color-hover       : #2aaaff;
+@thumb-color-active      : #0099ff;
 
 div.slider {
-  display      : flex;
-  align-items  : center;
-  gap          : 6px;
-  margin-bottom: 0.5em;
+  display         : flex;
+  align-items     : center;
+  gap             : 6px;
+  border          : 2px solid white;
+  border-radius   : 6px;
+  background-color: @slider-color;
+  padding         : 0.25em;
 }
 
 div.slider>span {
@@ -55,9 +59,10 @@ div.slider>div>div>button:active {
 div.slider>input {
   flex            : 0;
   margin-left     : 0.25em;
+  padding         : 0 0.2em;
   border          : 2px solid white;
   border-radius   : 6px;
-  background-color: @input-color;
+  background-color: @slider-input-color;
   width           : 7ch;
   text-align      : right;
   pointer-events  : auto;

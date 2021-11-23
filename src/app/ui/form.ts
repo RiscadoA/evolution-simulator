@@ -17,6 +17,12 @@ export class Form {
   /** The submit button. */
   private _submitButton: Button;
 
+  /** The on cancel callback. */
+  private _onCancelCallback: () => void;
+
+  /** The on submit callback. */
+  private _onSubmitCallback: () => void;
+
   /**
    * @param element The form element.
    * @param inputs The inputs on the form.
@@ -28,6 +34,10 @@ export class Form {
     const submit = Button.fromSelector(this._element, 'button#submit');
     if (!submit) throw new Error('Submit button not found on form.');
     this._submitButton = submit;
+    this._onCancelCallback = () => {};
+    this._onSubmitCallback = () => {};
+    if (this._cancelButton) this._cancelButton.addOnClickCallback(this.cancel.bind(this));
+    this._submitButton.addOnClickCallback(this.submit.bind(this));
   }
 
   /**
@@ -77,10 +87,7 @@ export class Form {
    * @param callback The callback.
    */
   public setOnCancel(callback: () => void): void {
-    if (this._cancelButton) {
-      this._cancelButton.clearOnClickCallbacks();
-      this._cancelButton.addOnClickCallback(callback);
-    }
+    this._onCancelCallback = callback;
   }
 
   /**
@@ -88,8 +95,7 @@ export class Form {
    * @param callback The callback.
    */
   public setOnSubmit(callback: () => void): void {
-    this._submitButton.clearOnClickCallbacks();
-    this._submitButton.addOnClickCallback(callback);
+    this._onSubmitCallback = callback;
   }
 
   /**
@@ -104,6 +110,22 @@ export class Form {
    */
   public set visible(value: boolean) {
     this._element.classList.toggle('hidden', !value);
+  }
+
+  /**
+   * Cancels the form.
+   */
+  public cancel(): void {
+    this.visible = false;
+    this._onCancelCallback();
+  }
+
+  /**
+   * Submits the form.
+   */
+  public submit(): void {
+    this.visible = false;
+    this._onSubmitCallback();
   }
 
   /**

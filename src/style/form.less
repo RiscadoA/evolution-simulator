@@ -6,7 +6,8 @@
 @submit-color-hover : #00c400;
 @submit-color-active: #00b400;
 
-div#forms, div.form-chain {
+div#forms,
+div.form-chain {
   position       : absolute;
   top            : 0;
   left           : 0;
@@ -34,6 +35,10 @@ div.form.hidden {
   display: none;
 }
 
+div.form>div {
+  margin-bottom: 0.5em;
+}
+
 div.form>hr {
   border    : 0;
   border-top: 2px solid #fff;
@@ -44,10 +49,10 @@ div.form>hr+p {
 }
 
 div.form>p {
-  margin-top     : 0.65em;
-  margin-bottom  : 0;
-  text-align: justify;
-  text-justify: auto;
+  margin-top   : 0.65em;
+  margin-bottom: 0;
+  text-align   : justify;
+  text-justify : auto;
 }
 
 div.form>p#credits {
@@ -68,6 +73,12 @@ div.form>button#cancel:hover {
 
 div.form>button#cancel:active {
   background-color: @cancel-color-active;
+}
+
+div.form>button.toggle {
+  display      : block;
+  width        : 100%;
+  margin-bottom: 0.5em;
 }
 
 div.form>button#submit {
