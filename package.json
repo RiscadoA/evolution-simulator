@@ -1,0 +1,32 @@
+{
+  "name": "evolution-simulator",
+  "version": "1.0.0",
+  "description": "A evolution simulator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RiscadoA/evolution-simulator.git"
+  },
+  "files": [
+    "src/"
+  ],
+  "scripts": {
+    "start": "parcel serve src/index.html --no-cache",
+    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url './'",
+    "deploy": "gh-pages -d dist",
+    "clean": "rm -rf dist"
+  },
+  "author": "Ricardo Antunes",
+  "license": "MIT",
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@parcel/transformer-less": "^2.0.1",
+    "cross-env": "^7.0.3",
+    "gh-pages": "^3.2.3",
+    "parcel": "^2.0.1",
+    "posthtml-include": "^1.7.2",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "less": "^4.1.2"
+  }
+}

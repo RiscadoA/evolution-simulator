@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "newLine": "LF",
+        "outDir": "lib",
+        "target": "es5",
+        "sourceMap": true,
+        "declaration": true,
+        "jsx": "preserve",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "strictPropertyInitialization": false,
+        "lib": [
+            "es2017",
+            "dom",
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ]
+    },
+    "include": [
+        "src/**/*",
+        "node_modules/@types"
+    ],
+    "exclude": [
+        ".git",
+        "node_modules"
+    ]
+}
