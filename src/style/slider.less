@@ -1,0 +1,80 @@
+@input-color        : #3a3a3a;
+@track-color        : white;
+@thumb-color        : #026cb3;
+@thumb-color-hover  : #2aaaff;
+@thumb-color-active : #0099ff;
+
+div.slider {
+  display      : flex;
+  align-items  : center;
+  gap          : 6px;
+  margin-bottom: 0.5em;
+}
+
+div.slider>span {
+  flex: 1;
+}
+
+div.slider>div {
+  flex            : 0;
+  min-width       : 6em;
+  padding-left    : 0.5em;
+  padding-right   : 0.5em;
+  height          : 4px;
+  background-color: @track-color;
+  border-radius   : 6px;
+}
+
+div.slider>div>div {
+  position  : relative;
+  width     : 100%;
+  height    : 100%;
+  background: transparent
+}
+
+div.slider>div>div>button {
+  display         : block;
+  position        : relative;
+  left            : 0%;
+  margin-left     : -0.5em;
+  margin-top      : -0.5em;
+  padding         : 0.5em;
+  border          : 2px solid white;
+  border-radius   : 6px;
+  background-color: @thumb-color;
+}
+
+div.slider>div>div>button:hover {
+  background-color: @thumb-color-hover;
+}
+
+div.slider>div>div>button:active {
+  background-color: @thumb-color-active;
+}
+
+div.slider>input {
+  flex            : 0;
+  margin-left     : 0.25em;
+  border          : 2px solid white;
+  border-radius   : 6px;
+  background-color: @input-color;
+  width           : 7ch;
+  text-align      : right;
+  pointer-events  : auto;
+}
+
+div.slider>input:focus {
+  outline: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+div.slider>input::-webkit-outer-spin-button,
+div.slider>input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin            : 0;
+}
+
+/* Firefox */
+div.slider>input[type=number] {
+  -moz-appearance: textfield;
+}
