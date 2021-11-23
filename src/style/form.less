@@ -1,0 +1,88 @@
+@form-color         : #666666;
+@cancel-color       : #ca0000;
+@cancel-color-hover : #e40000;
+@cancel-color-active: #d60101;
+@submit-color       : #009e00;
+@submit-color-hover : #00c400;
+@submit-color-active: #00b400;
+
+div#forms, div.form-chain {
+  position       : absolute;
+  top            : 0;
+  left           : 0;
+  width          : 100%;
+  height         : 100%;
+  z-index        : 1;
+  background     : transparent;
+  pointer-events : none;
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+}
+
+div.form {
+  position        : relative;
+  pointer-events  : default;
+  background-color: @form-color;
+  border          : 2px solid #fff;
+  border-radius   : 6px;
+  padding         : 0.5em;
+  max-width       : min(max(15em, 50%), 30em);
+}
+
+div.form.hidden {
+  display: none;
+}
+
+div.form>hr {
+  border    : 0;
+  border-top: 2px solid #fff;
+}
+
+div.form>hr+p {
+  margin-top: 0;
+}
+
+div.form>p {
+  margin-top     : 0.65em;
+  margin-bottom  : 0;
+  text-align: justify;
+  text-justify: auto;
+}
+
+div.form>p#credits {
+  margin-top : 0;
+  padding-top: 0.6em;
+  display    : inline-block;
+}
+
+div.form>button#cancel {
+  float           : left;
+  margin-right    : 0.5em;
+  background-color: @cancel-color;
+}
+
+div.form>button#cancel:hover {
+  background-color: @cancel-color-hover;
+}
+
+div.form>button#cancel:active {
+  background-color: @cancel-color-active;
+}
+
+div.form>button#submit {
+  float           : right;
+  background-color: @submit-color;
+}
+
+div.form>p#credits+button#submit {
+  float: inline-end;
+}
+
+div.form>button#submit:hover {
+  background-color: @submit-color-hover;
+}
+
+div.form>button#submit:active {
+  background-color: @submit-color-active;
+}
