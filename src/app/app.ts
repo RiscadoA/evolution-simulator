@@ -1,5 +1,6 @@
 import * as GL from './gl';
 import * as UI from './ui';
+import * as Sim from './sim';
 
 /**
  * Manages all the application state.
@@ -17,8 +18,13 @@ export class App {
   /** Last update time. */
   private _lastTime: number;
 
+  /** The simulation stage. */
+  private _stage: Sim.Stage|null;
+
   // Default constructor.
   public constructor() {
+    this._stage = null;
+
     // Initialize the loading screen.
     this.loadingScreen = UI.LoadingScreen.fromSelector('div#loading');
 
@@ -36,9 +42,24 @@ export class App {
       }, 250);
     });
 
-    // Create form.
+    // Create introduction form.
     const intro = UI.FormChain.fromSelector('#introduction')!;
     intro.visible = true;
+    intro.setOnSubmit(() => {
+      // Get parameters from the form.
+      const params: Sim.StageSettings = {
+        population: intro.get<number>('population')!.value,
+        mutationRate: intro.get<number>('mutationRate')!.value,
+        eyeCount: intro.get<number>('eyeCount')!.value,
+        hiddenLayerSize: intro.get<number>('hiddenLayerSize')!.value,
+        initialFoodCount: intro.get<number>('initialFoodCount')!.value,
+        newFoodRate: intro.get<number>('newFoodRate')!.value,
+        roundDuration: intro.get<number>('roundDuration')!.value,
+      };
+
+      // Create the stage.
+      this._stage = new Sim.Stage(params);
+    });
   }
 
   /**
@@ -56,6 +77,12 @@ export class App {
    * @param dt Delta time in seconds.
    */
   private animate(dt: number): void {
+    // Update and draw the stage.
+    if (this._stage !== null) {
+      this._stage.update(dt);
+      this._stage.draw(this._renderer);
+    } 
+
     // Flush the renderer.
     this._renderer.flush();
   }
