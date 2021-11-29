@@ -1,4 +1,4 @@
-import * as GL from '../gl';
+import {CommandQueue} from '../gl';
 import {Vec2} from '../math';
 
 import {Collider} from './collider';
@@ -14,7 +14,7 @@ export abstract class Body {
    * @param position The position of the body.
    */
   public constructor(position: Vec2) {
-    this._position = position.clone();
+    this._position = position;
   }
 
   /**
@@ -28,7 +28,7 @@ export abstract class Body {
    * Sets the position of the body.
    */
   public set position(position: Vec2) {
-    this._position = position.clone();
+    this._position = position;
   }
 
   /**
@@ -38,8 +38,9 @@ export abstract class Body {
 
   /**
    * Draws the body.
+   * @param queue The command queue to draw to.
    */
-  public abstract draw(renderer: GL.Renderer): void;
+  public abstract draw(queue: CommandQueue): void;
 }
 
 /**
@@ -56,7 +57,7 @@ export abstract class KinematicBody extends Body {
    */
   public constructor(position: Vec2, velocity: Vec2) {
     super(position);
-    this._velocity = velocity.clone();
+    this._velocity = velocity;
   }
 
   /**
@@ -70,7 +71,7 @@ export abstract class KinematicBody extends Body {
    * Sets the velocity of the body.
    */
   public set velocity(velocity: Vec2) {
-    this._velocity = velocity.clone();
+    this._velocity = velocity;
   }
 }
 

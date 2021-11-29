@@ -1,5 +1,9 @@
-import {Button, Slider, Switch, Toggle} from '.';
+import {Button} from './button';
 import {Input} from './input';
+import {Range} from './range';
+import {Slider} from './slider';
+import {Switch} from './switch';
+import {Toggle} from './toggle';
 
 /**
  * Represents a form.
@@ -50,6 +54,7 @@ export class Form {
 
     // Get all inputs on the form.
     const inputs = new Map<string, Input<any>>();
+    Range.fromChildren(element).forEach(([id, r]) => inputs.set(id, r));
     Slider.fromChildren(element).forEach(([id, s]) => inputs.set(id, s));
     Switch.fromChildren(element).forEach(([id, s]) => inputs.set(id, s));
     Toggle.fromChildren(element).forEach(([id, t]) => inputs.set(id, t));

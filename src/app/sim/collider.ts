@@ -47,7 +47,7 @@ export class CircleCollider implements Collider {
    * @param radius The radius of the circle.
    */
   public constructor(position: Vec2, radius: number) {
-    this.position = position.clone();
+    this.position = position;
     this.radius = radius;
   }
 

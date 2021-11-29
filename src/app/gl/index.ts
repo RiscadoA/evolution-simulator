@@ -2,6 +2,7 @@ import {Renderer} from './renderer';
 import {WebGLRenderer} from './webgl-renderer';
 
 export {Camera} from './camera';
+export {CommandQueue} from './command-queue';
 export {Renderer};
 
 /**

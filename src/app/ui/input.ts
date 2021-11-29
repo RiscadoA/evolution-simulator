@@ -29,9 +29,10 @@ export abstract class Input<Type> {
    */
   set value(value: Type) {
     const newValue = this.validate(value);
+    if (newValue === this._value) return;
     this._value = newValue;
     this.updateDisplay();
-    if (this._value !== newValue) this._onValueChanged.forEach(callback => callback(this._value));
+    this._onValueChanged.forEach(callback => callback(this._value));
   }
 
   /**

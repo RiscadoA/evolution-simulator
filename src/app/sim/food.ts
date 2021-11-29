@@ -1,4 +1,4 @@
-import {Renderer} from '../gl';
+import {CommandQueue} from '../gl';
 import {Color, Vec2} from '../math';
 import {StaticBody} from './body';
 import {CircleCollider, Collider} from './collider';
@@ -13,6 +13,9 @@ const FOOD_COLOR = Color.new(0.2, 0.9, 0.4);
  * Represents a bullet.
  */
 export class Food extends StaticBody {
+  /** The food's radius. */
+  public static readonly Radius = FOOD_RADIUS;
+
   /**
    * @param position The position of the food.
    */
@@ -27,11 +30,8 @@ export class Food extends StaticBody {
     return new CircleCollider(this.position, FOOD_RADIUS);
   }
 
-  /**
-   * Draws the bullet.
-   * @param renderer The renderer used to draw the bullet.
-   */
-  public override draw(renderer: Renderer): void {
-    renderer.drawCircle(this.position, FOOD_RADIUS, FOOD_COLOR);
+  // Draws the food.
+  public override draw(queue: CommandQueue): void {
+    queue.drawCircle(this.position, FOOD_RADIUS, FOOD_COLOR);
   }
 }
