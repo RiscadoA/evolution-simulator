@@ -1,33 +1,37 @@
 import {Color, Vec2} from '../math';
-import {DrawCommand} from './draw-command';
+import {Command} from './command';
 
 /**
  * Command used to draw a box.
  */
-export class DrawBox extends DrawCommand {
+export class DrawBox implements Command {
   /** The center of the box. */
-  public center: Vec2;
+  public readonly center: Vec2;
 
   /** The size of the box. */
-  public size: Vec2;
-
-  /** The rotation of the box. */
-  public rotation: number;
+  public readonly size: Vec2;
 
   /** The color of the box. */
-  public color: Color;
+  public readonly color: Color;
+
+  /** The velocity of the box. */
+  private readonly _velocity: Vec2;
 
   /**
    * @param center The center of the box.
    * @param size The size of the box.
-   * @param rotation The rotation of the box.
    * @param color The color of the box.
+   * @param velocity The velocity of the box.
    */
-  public constructor(center: Vec2, size: Vec2, rotation: number, color: Color) {
-    super();
-    this.center = center.clone();
-    this.size = size.clone();
-    this.rotation = rotation;
-    this.color = color.clone();
+  public constructor(center: Vec2, size: Vec2, color: Color, velocity: Vec2) {
+    this.center = center;
+    this.size = size;
+    this.color = color;
+    this._velocity = velocity;
+  }
+
+  // Implement the Command interface.
+  public interpolate(dt: number): Command {
+    return new DrawBox(this.center.add(this._velocity.mul(dt)), this.size, this.color, this._velocity);
   }
 }

@@ -1,8 +1,9 @@
 import {Color, Mat3, Vec2} from '../math';
 
+import {Command} from './command';
+import {DrawArrow} from './draw-arrow';
 import {DrawBox} from './draw-box';
 import {DrawCircle} from './draw-circle';
-import {DrawCommand} from './draw-command';
 import {DrawLine} from './draw-line';
 import {Renderer} from './renderer';
 
@@ -10,10 +11,13 @@ import {Renderer} from './renderer';
 const BACKGROUND_COLOR = new Color(0.3, 0.6, 0.9, 1.0);
 
 /** Number of circle divisions. */
-const CIRCLE_DIVISIONS = 32;
+const CIRCLE_DIVISIONS = 64;
 
 /** Line thickness. */
 const LINE_THICKNESS = 0.05;
+
+/** Arrow head size. */
+const ARROW_HEAD_SIZE = 0.5;
 
 /**
  * Renderer implementation for WebGL.
@@ -64,7 +68,8 @@ export class WebGLRenderer extends Renderer {
         vec3 position = transform * vec3(position, 1.0);
         gl_Position = vec4(position.xy, 0.0, 1.0);
       }
-    `, `
+    `,
+        `
       precision mediump float;
 
       uniform vec3 color;
@@ -109,7 +114,7 @@ export class WebGLRenderer extends Renderer {
   }
 
   // Flushes the draw commands queue.
-  public override flush(): void {
+  protected override render(): void {
     // Clear the canvas.
     this._gl.viewport(0, 0, this._canvas.width, this._canvas.height);
     this._gl.clearColor(BACKGROUND_COLOR.r, BACKGROUND_COLOR.g, BACKGROUND_COLOR.b, 1);
@@ -118,14 +123,13 @@ export class WebGLRenderer extends Renderer {
     // Execute all the draw commands.
     this._drawShader.use();
     this.executeCommands(this.executeCommand.bind(this));
-    this.clearCommands();
   }
 
   /**
    * Executes a draw command.
    * @param command The command to execute.
    */
-  private executeCommand(command: DrawCommand): void {
+  private executeCommand(command: Command): void {
     // Draw circle command.
     if (command instanceof DrawCircle) {
       // Set uniforms.
@@ -142,7 +146,7 @@ export class WebGLRenderer extends Renderer {
     // Draw box command.
     else if (command instanceof DrawBox) {
       // Set uniforms.
-      const model = Mat3.scale(command.size).mul(Mat3.rotation(command.rotation)).mul(Mat3.translation(command.center));
+      const model = Mat3.scale(command.size).mul(Mat3.translation(command.center));
       const final = model.mul(this.camera.matrix);
       this._gl.uniformMatrix3fv(this._drawShaderTransformLocation, false, final.elements);
       this._gl.uniform3f(this._drawShaderColorLocation, command.color.r, command.color.g, command.color.b);
@@ -158,7 +162,7 @@ export class WebGLRenderer extends Renderer {
       const offset = command.end.sub(command.start);
       const translation = Mat3.translation(command.start);
       const scale = Mat3.scale(Vec2.new(command.thickness, offset.length()));
-      const rotation = Mat3.rotation(offset.angle() - Math.PI / 2);
+      const rotation = Mat3.rotation(Math.PI / 2 - offset.angle());
       const final = scale.mul(rotation).mul(translation).mul(this.camera.matrix);
       this._gl.uniformMatrix3fv(this._drawShaderTransformLocation, false, final.elements);
       this._gl.uniform3f(this._drawShaderColorLocation, command.color.r, command.color.g, command.color.b);
@@ -166,6 +170,35 @@ export class WebGLRenderer extends Renderer {
       // Draw the line.
       this._gl.enableVertexAttribArray(this._drawShaderPositionLocation);
       this._gl.vertexAttribPointer(this._drawShaderPositionLocation, 2, this._gl.FLOAT, false, 0, 0);
+      this._gl.drawArrays(this._gl.TRIANGLE_FAN, this._line[0], this._line[1]);
+    }
+    // Draw arrow command.
+    else if (command instanceof DrawArrow) {
+      // Bind vertex array and set the color.
+      this._gl.enableVertexAttribArray(this._drawShaderPositionLocation);
+      this._gl.vertexAttribPointer(this._drawShaderPositionLocation, 2, this._gl.FLOAT, false, 0, 0);
+      this._gl.uniform3f(this._drawShaderColorLocation, command.color.r, command.color.g, command.color.b);
+
+      // Draw the arrow line.
+      const offset = command.end.sub(command.start);
+      const translation = Mat3.translation(command.start);
+      const scale = Mat3.scale(Vec2.new(command.thickness, offset.length()));
+      const rotation = Mat3.rotation(Math.PI / 2 - offset.angle());
+      const final = scale.mul(rotation).mul(translation).mul(this.camera.matrix);
+      this._gl.uniformMatrix3fv(this._drawShaderTransformLocation, false, final.elements);
+      this._gl.drawArrays(this._gl.TRIANGLE_FAN, this._line[0], this._line[1]);
+
+      // Draw the arrow head.
+      const head = Mat3.translation(command.end);
+      const headScale = Mat3.scale(Vec2.new(command.thickness, command.thickness * ARROW_HEAD_SIZE));
+      const head1Rotation = Mat3.rotation(Math.PI / 6 - Math.PI / 2 - offset.angle());
+      const head1Final = headScale.mul(head1Rotation).mul(head).mul(this.camera.matrix);
+      const head2Rotation = Mat3.rotation(-Math.PI / 6 - Math.PI / 2 - offset.angle());
+      const head2Final = headScale.mul(head2Rotation).mul(head).mul(this.camera.matrix);
+
+      this._gl.uniformMatrix3fv(this._drawShaderTransformLocation, false, head1Final.elements);
+      this._gl.drawArrays(this._gl.TRIANGLE_FAN, this._line[0], this._line[1]);
+      this._gl.uniformMatrix3fv(this._drawShaderTransformLocation, false, head2Final.elements);
       this._gl.drawArrays(this._gl.TRIANGLE_FAN, this._line[0], this._line[1]);
     }
   }
