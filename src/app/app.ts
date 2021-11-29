@@ -1,7 +1,6 @@
 import * as GL from './gl';
 import {Vec2} from './math';
 import * as Sim from './sim';
-import {Statistics} from './sim/statistics';
 import * as UI from './ui';
 
 /** The movement speed of the camera. */
@@ -12,6 +11,9 @@ const CAMERA_ZOOM_SPEED = 0.1;
 
 /** Maximum number of skipped frames. */
 const MAX_SKIP = 5;
+
+/** Help page URL. */
+const HELP_URL = 'https://riscadoa.com/portfolio/evolution-simulator/';
 
 /**
  * Manages all the application state.
@@ -47,17 +49,14 @@ export class App {
   /** The simulation speed. */
   private _simulationSpeed: UI.Slider;
 
-  /** The statistics button. */
-  private _statisticsButton: UI.Button;
-
-  /** The statistics. */
-  private _statistics: Statistics;
-
   /** The best creature button. */
   private _bestButton: UI.Button;
 
   /** The fast forward button. */
   private _fastForwardButton: UI.Button;
+
+  /** The help button. */
+  private _helpButton: UI.Button;
 
   /** The current generation display. */
   private _currentGeneration: UI.Display;
@@ -157,6 +156,10 @@ export class App {
     this._fastForwardIcon.classList.toggle('hidden', true);
     this._pauseIcon = document.body.querySelector('i#pause')!;
     this._pauseIcon.classList.toggle('hidden', true);
+    this._helpButton = UI.Button.fromSelector(document.body, 'button#helpButton')!;
+    this._helpButton.addOnClickCallback(() => {
+      window.open(HELP_URL);
+    });
 
     // Create introduction form.
     const intro = UI.FormChain.fromSelector('#introduction')!;
