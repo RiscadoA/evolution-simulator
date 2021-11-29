@@ -49,7 +49,7 @@ export class Mat3 {
   public static rotation(angle: number): Mat3 {
     const c = Math.cos(angle);
     const s = Math.sin(angle);
-    return new Mat3(c, s, 0, -s, c, 0, 0, 0, 1);
+    return new Mat3(c, -s, 0, s, c, 0, 0, 0, 1);
   }
 
   /**
@@ -141,18 +141,22 @@ export class Mat3 {
   }
 
   /**
-   * Calculates the cofactor matrix of this matrix.
-   * @returns The cofactor matrix.
+   * Calculates the adjunt matrix of this matrix.
+   * @returns The adjunt matrix.
    */
-  public cofactor(): Mat3 {
+  public adjunt(): Mat3 {
     const a = this.elements;
-    const c = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 3; i++)
-      for (let j = 0; j < 3; j++) {
-        const sign = (i + j) % 2 == 0 ? 1 : -1;
-        c[i * 3 + j] = sign * a[j * 3 + (i + 1) % 3] * a[(i + 2) * 3 + j];
-      }
-    return new Mat3(...c);
+    const b = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    b[0 * 3 + 0] = a[1 * 3 + 1] * a[2 * 3 + 2] - a[1 * 3 + 2] * a[2 * 3 + 1];
+    b[0 * 3 + 1] = a[0 * 3 + 2] * a[2 * 3 + 1] - a[0 * 3 + 1] * a[2 * 3 + 2];
+    b[0 * 3 + 2] = a[0 * 3 + 1] * a[1 * 3 + 2] - a[0 * 3 + 2] * a[1 * 3 + 1];
+    b[1 * 3 + 0] = a[1 * 3 + 2] * a[2 * 3 + 0] - a[1 * 3 + 0] * a[2 * 3 + 2];
+    b[1 * 3 + 1] = a[0 * 3 + 0] * a[2 * 3 + 2] - a[0 * 3 + 2] * a[2 * 3 + 0];
+    b[1 * 3 + 2] = a[0 * 3 + 2] * a[1 * 3 + 0] - a[0 * 3 + 0] * a[1 * 3 + 2];
+    b[2 * 3 + 0] = a[1 * 3 + 0] * a[2 * 3 + 1] - a[1 * 3 + 1] * a[2 * 3 + 0];
+    b[2 * 3 + 1] = a[0 * 3 + 1] * a[2 * 3 + 0] - a[0 * 3 + 0] * a[2 * 3 + 1];
+    b[2 * 3 + 2] = a[0 * 3 + 0] * a[1 * 3 + 1] - a[0 * 3 + 1] * a[1 * 3 + 0];
+    return new Mat3(...b);
   }
 
   /**
@@ -161,8 +165,7 @@ export class Mat3 {
    */
   public inverse(): Mat3 {
     const det = this.det();
-    if (det == 0) throw new Error(`Can't find the inverse of the matrix because its determinant is zero`);
-    const cof = this.cofactor();
-    return cof.transpose().mul(1 / det);
+    if (det === 0) throw new Error(`Can't find the inverse of the matrix because its determinant is zero`);
+    return this.adjunt().mul(1 / det);
   }
 }

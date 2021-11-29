@@ -4,6 +4,9 @@ import {Mat3} from './mat3';
  * Represents a row-major 2D vector.
  */
 export class Vec2 {
+  /** Zero vector. */
+  public static readonly ZERO = new Vec2(0, 0);
+
   /** The x coordinate. */
   private _x: number;
 
@@ -44,14 +47,6 @@ export class Vec2 {
   }
 
   /**
-   * Creates a new vector with zero coordinates.
-   * @returns The new vector.
-   */
-  public static zero(): Vec2 {
-    return new Vec2(0, 0);
-  }
-
-  /**
    * Creates a new vector from an angle.
    * @param angle The angle.
    * @returns The new vector.
@@ -61,11 +56,13 @@ export class Vec2 {
   }
 
   /**
-   * Clones this vector.
-   * @returns The cloned vector.
+   * Returns a random vector within the given range.
+   * @param min The minimum value.
+   * @param max The maximum value.
+   * @returns The result.
    */
-  public clone(): Vec2 {
-    return new Vec2(this._x, this._y);
+  public static random(min: Vec2, max: Vec2): Vec2 {
+    return new Vec2(Math.random() * (max.x - min.x) + min.x, Math.random() * (max.y - min.y) + min.y);
   }
 
   /**
@@ -203,5 +200,24 @@ export class Vec2 {
    */
   public min(other: Vec2): Vec2 {
     return new Vec2(Math.min(this._x, other._x), Math.min(this._y, other._y));
+  }
+
+  /**
+   * Reflects this vector on a normal vector.
+   * @param normal The normal vector.
+   * @returns The result.
+   */
+  public reflect(normal: Vec2): Vec2 {
+    return this.sub(normal.mul(2 * this.dot(normal)));
+  }
+
+  /**
+   * Mixes this vector with another vector.
+   * @param other The other vector.
+   * @param t The mix factor.
+   * @returns The result.
+   */
+  public mix(other: Vec2, t: number): Vec2 {
+    return new Vec2(this._x * (1 - t) + other._x * t, this._y * (1 - t) + other._y * t);
   }
 }
