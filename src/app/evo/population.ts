@@ -1,22 +1,40 @@
-import {Genome} from './gene';
+import {Genome} from './genome';
 import {Genotype} from './genotype';
-
-// Number of elite genotypes to keep.
-const ELITE_COUNT = 2;
 
 /**
  * Represents a population of genotypes.
  */
 export class Population {
+  /** The genome of the population. */
+  private _genome: Genome;
+
   /** The genotypes in the population. */
   private _genotypes: Genotype[];
 
+  /** The mutation rate. */
+  private _mutationRate: number;
+
   /**
-   * @param genes The population's genome.
-   * @param genotypeCount The genotype count.
+   * @param genome The genome of the population.
+   * @param genotypes The genotypes of the population.
+   * @param mutationRate The mutation rate.
    */
-  public constructor(genome: Genome, genotypeCount: number) {
-    this._genotypes = new Array(genotypeCount).map(() => Genotype.random(genome));
+  public constructor(genome: Genome, genotypes: Genotype[], mutationRate: number) {
+    if (genotypes.length % 2 !== 0) throw new Error('The number of genotypes in a population must be even.');
+    this._genome = genome;
+    this._genotypes = genotypes;
+    this._mutationRate = mutationRate;
+  }
+
+  /**
+   * Creates a new random population.
+   * @param genome The genome of the population.
+   * @param genotypeCount The number of genotypes in the population.
+   * @param mutationRate The mutation rate.
+   */
+  public static random(genome: Genome, genotypeCount: number, mutationRate: number): Population {
+    let genotypes = new Array<Genotype|null>(genotypeCount).fill(null).map(() => Genotype.random(genome));
+    return new Population(genome, genotypes, mutationRate);
   }
 
   /**
@@ -27,26 +45,29 @@ export class Population {
   }
 
   /**
-   * Iterates a new generation of genotypes.
-   * @param eliteCount The number of elite genotypes to keep.
-   * @param mutationRate The gene mutation rate.
+   * Selects the parents of the next generation.
+   * @parma fitness The fitness of the population.
+   * @returns The indices of the parents.
    */
-  public iterate(eliteCount: number = ELITE_COUNT, mutationRate: number): void {
-    // Rank old genotypes by their fitness.
-    const oldGenotypes = this._genotypes.sort((a, b) => b.fitness - a.fitness);
+  public select(fitness: number[]): number[] {
+    let sortedFitness = fitness.map((f, i) => [f, i]).sort(([a, _1], [b, _2]) => b - a);
+    let parents = new Array<number>(this._genotypes.length);
+    for (let i = 0; i < parents.length / 2; i++) {
+      parents[2 * i + 0] = sortedFitness[i][1];
+      parents[2 * i + 1] = sortedFitness[i][1];
+    }
+    return parents;
+  }
 
-    // Keep the best genotypes.
-    const newGenotypes: Genotype[] = oldGenotypes.slice(0, eliteCount);
-
-    // Used to choose the parents of the next generation.
-    const chooseParent = (): Genotype => {
-      const index = Math.floor(Math.random() ** 2 * oldGenotypes.length);
-      return oldGenotypes[index];
-    };
-
-    // Create new genotypes by crossing over old ones.
-    while (newGenotypes.length < oldGenotypes.length)
-      newGenotypes.push(chooseParent().crossover(chooseParent()).mutate(mutationRate));
-    this._genotypes = newGenotypes;
+  /**
+   * Creates a new population from this one, by making the genotypes reproduce.
+   * @param parents The indices of the parents of the new population.
+   * @returns A new population.
+   */
+  public breed(parents: number[]): Population {
+    let newGenotypes = new Array<Genotype|null>(this._genotypes.length)
+                           .fill(null)
+                           .map((_, i) => this._genotypes[parents[i]].mutate(this._mutationRate));
+    return new Population(this._genome, newGenotypes, this._mutationRate);
   }
 }

@@ -1,25 +1,28 @@
-import {Genome} from './gene';
+import {Connection} from './connection';
+import {Genome} from './genome';
 
 /**
  * Represents an instance of a genome, which can be mutated and crossed over with other genotypes.
  */
 export class Genotype {
-  /** The fitness of this genotype. */
-  public fitness: number;
-
   /** The genome of this genotype. */
   private _genome: Genome;
 
-  /** The gene values. */
-  private _values: number[];
+  /** The neuron count of this genotype. */
+  private _neuronCount: number;
+
+  /** The connections of this genotype. */
+  private _connections: Connection[];
 
   /**
    * @param genome The genome of this genotype.
-   * @param values The gene values.
+   * @param neuronCount The neuron count of this genotype.
+   * @param connections The connections of this genotype.
    */
-  private constructor(genome: Genome, values: number[]) {
+  private constructor(genome: Genome, neuronCount: number, connections: Connection[]) {
     this._genome = genome;
-    this._values = values;
+    this._neuronCount = neuronCount;
+    this._connections = connections;
   }
 
   /**
@@ -28,8 +31,12 @@ export class Genotype {
    * @returns A new random genotype.
    */
   public static random(genome: Genome): Genotype {
-    const values = genome.map(gene => gene.random());
-    return new Genotype(genome, values);
+    let neuronCount =
+        Math.round(Math.random() * (genome.maxNeuronCount - genome.minNeuronCount)) + genome.minNeuronCount;
+    let connectionCount =
+        Math.round(Math.random() * (genome.maxConnectionCount - genome.minConnectionCount)) + genome.minConnectionCount;
+    let connections = new Array<Connection|null>(connectionCount).fill(null).map(() => Connection.random(neuronCount));
+    return new Genotype(genome, neuronCount, connections);
   }
 
   /**
@@ -40,20 +47,17 @@ export class Genotype {
   }
 
   /**
-   * Gets the a gene value.
-   * @param index The index of the gene.
-   * @returns The gene value.
+   * Gets the neuron count of this genotype.
    */
-  public get(index: number): number {
-    return this._values[index];
+  public get neuronCount(): number {
+    return this._neuronCount;
   }
 
   /**
-   * Returns an iterator over the gene values.
-   * @returns An iterator over the gene values.
+   * Gets the connections of this genotype.
    */
-  public values(): Iterator<number> {
-    return this._values.values();
+  public get connections(): Connection[] {
+    return this._connections;
   }
 
   /**
@@ -62,18 +66,33 @@ export class Genotype {
    * @returns The mutated genotype.
    */
   public mutate(rate: number): Genotype {
-    const values = this._values.map((value, index) => Math.random() < rate ? this._genome[index].random() : value);
-    return new Genotype(this._genome, values);
-  }
+    let neuronCount = this.neuronCount;
 
-  /**
-   * Crosses over with this genotype another genotype, and returns the result.
-   * @param other The other genotype.
-   * @returns The result of crossing over.
-   */
-  public crossover(other: Genotype): Genotype {
-    if (this.genome != other.genome) throw new Error('Genotypes must have the same genome to be crossed over.');
-    const values = this._values.map((value, index) => this._genome[index].crossover(value, other._values[index]));
-    return new Genotype(this._genome, values);
+    // Change the neuron count.
+    if (Math.random() < rate) {
+      let delta = Math.random() < 0.5 ? 1 : -1;
+      let newNeuronCount = this.neuronCount + delta;
+      if (newNeuronCount >= this.genome.minNeuronCount && newNeuronCount <= this.genome.maxNeuronCount)
+        neuronCount = newNeuronCount;
+    }
+
+    // Change the connections.
+    let connections = this.connections
+                          .map(connection => {
+                            if (Math.random() < rate)
+                              return Connection.random(neuronCount);
+                            else if (Math.random() < rate / this.connections.length)
+                              return null;  // Remove the connection.
+                            else if (connection.source < neuronCount && connection.target < neuronCount)
+                              return connection;
+                            else
+                              return null;
+                          })
+                          .filter(connection => connection !== null) as Connection[];
+    // Add a connection.
+    if (connections.length < this.genome.maxConnectionCount && Math.random() < rate)
+      connections.push(Connection.random(neuronCount));
+
+    return new Genotype(this._genome, neuronCount, connections);
   }
 }
