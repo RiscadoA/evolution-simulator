@@ -1,0 +1,2 @@
+div#loading{background-color:#000}div#loading,div.overlay{height:100%;left:0;position:absolute;top:0;width:100%;z-index:1}div.overlay{background-color:#faebd7}div.forms{align-items:center;background:transparent;display:flex;height:100%;justify-content:center;pointer-events:none;position:absolute;width:100%}*{color:#fff;font-family:Arial;font-size:1em;font-weight:700}body{margin:0;overflow:hidden;padding:0;user-select:none}canvas{display:block}
+/*# sourceMappingURL=index.5b008ebc.css.map */
